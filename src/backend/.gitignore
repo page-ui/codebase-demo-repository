@@ -1,0 +1,27 @@
+# Security Secrets
+secrets/
+certs/
+
+# .NET
+[Bb]in/
+[Oo]bj/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Environment
+.env
+.omx/
+.omg/
+.vs/
+.dotnet/
+.dotnet-home/
+
+# Node / render artifacts
+**/node_modules/
+Page.Ui.SvelteRender/runs/
+Page.Ui.SvelteRender/NodeWorker/runs/
+
+Notes/
+Docker_Deploy/
+nginx.conf

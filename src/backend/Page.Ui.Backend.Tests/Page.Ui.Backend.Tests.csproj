@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Page.Ui.Application\Page.Ui.Application.csproj" />
+    <ProjectReference Include="..\Page.Ui.Domain\Page.Ui.Domain.csproj" />
+    <ProjectReference Include="..\Page.Ui.Infrastructure\Page.Ui.Infrastructure.csproj" />
+    <ProjectReference Include="..\Page.Ui.Presentation\Page.Ui.Presentation.csproj" />
+    <ProjectReference Include="..\Page.Ui.SvelteRender\Page.Ui.SvelteRender.csproj" />
+    <ProjectReference Include="..\Page.Ui.Worker.Ai\Page.Ui.Worker.Ai.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

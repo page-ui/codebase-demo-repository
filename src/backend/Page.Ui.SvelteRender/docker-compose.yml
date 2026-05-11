@@ -1,0 +1,69 @@
+name: page-ui-svelte-render
+
+services:
+  svelte-render:
+    build:
+      context: ..
+      dockerfile: ./Page.Ui.SvelteRender/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ServiceAuth__ApiKey=${SVELTE_RENDER_API_KEY:-sr_live_58c2a9d8213b4f6e917d3a04c56b78e2}
+      - Sandbox__Endpoint=http://svelte-render-sandbox:4000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - render-internal
+    user: "0:0"
+    read_only: true
+    tmpfs:
+      - /app/NodeWorker/runs:rw,noexec,nosuid,size=512m
+      - /tmp:rw,noexec,nosuid,size=64m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 200
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          memory: 256M
+
+  svelte-render-sandbox:
+    build:
+      context: ..
+      dockerfile: ./Page.Ui.SvelteRender/Dockerfile.sandbox
+    image: page-ui/svelte-render-sandbox:latest
+    entrypoint: ["node", "/app/NodeWorker/runner.js"]
+    environment:
+      - PORT=4000
+      - WORK_DIR=/render_jobs
+      - NODE_OPTIONS=--disallow-code-generation-from-strings
+    networks:
+      - render-internal
+    restart: always
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+      - /render_jobs:rw,noexec,nosuid,size=512m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    user: "1000:1000"
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+
+networks:
+  render-internal:
+    driver: bridge
+    internal: true

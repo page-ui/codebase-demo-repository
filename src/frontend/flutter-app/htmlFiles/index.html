@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page.Ui | Cyber-Tech Visualizer [Widescreen]</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500;800&family=Inter:wght@200;400;900&display=swap');
+
+        :root {
+            --bg: #0a0a0c;
+            --charcoal: #121217;
+            --mint: #00ffaa;
+            --mint-glow: rgba(0, 255, 170, 0.4);
+            --border: rgba(0, 255, 170, 0.15);
+            --font-main: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #000;
+            color: white;
+            font-family: var(--font-main);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Widescreen Container */
+        #visualizer {
+            position: relative;
+            width: min(1500px, 100vw, 300vh);
+            aspect-ratio: 3 / 1;
+            background-color: var(--bg);
+            border: 1px solid #1a1a1f;
+            overflow: hidden;
+            background-image: 
+                linear-gradient(var(--charcoal) 1px, transparent 1px),
+                linear-gradient(90deg, var(--charcoal) 1px, transparent 1px);
+            background-size: 50px 50px;
+            box-shadow: 0 0 100px rgba(0,0,0,1);
+        }
+
+        #visualizer::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(10, 10, 12, 0.8) 100%);
+            pointer-events: none;
+        }
+
+        /* The Mint Horizon */
+        #horizon-container {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: var(--mint);
+            box-shadow: 0 0 30px var(--mint-glow), 0 0 60px var(--mint-glow);
+            z-index: 100;
+            transform: translateX(-50%);
+        }
+
+        @keyframes glitch-line {
+            0% { transform: translateX(-50%) translateX(0); }
+            95% { transform: translateX(-50%) translateX(0); }
+            96% { transform: translateX(-50%) translateX(-2px); }
+            97% { transform: translateX(-50%) translateX(3px); }
+            98% { transform: translateX(-50%) translateX(-1px); }
+            100% { transform: translateX(-50%) translateX(0); }
+        }
+        #horizon-container { animation: glitch-line 4s infinite; }
+
+        .entity {
+            position: absolute;
+            pointer-events: none;
+            will-change: transform, opacity;
+            z-index: 10;
+        }
+
+        .code-view {
+            font-family: var(--font-code);
+            font-size: 13px;
+            color: var(--mint);
+            text-shadow: 0 0 10px var(--mint-glow);
+            white-space: nowrap;
+            letter-spacing: 0;
+        }
+
+        .ui-view {
+            position: absolute;
+            top: 50%; left: 0;
+            transform: translateY(-50%) scale(0.9);
+            background: var(--charcoal);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--mint);
+            padding: 15px;
+            box-shadow: 10px 10px 40px rgba(0,0,0,0.8);
+            opacity: 0;
+            width: min(280px, 72vw);
+            transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        .ui-view::before {
+            content: '';
+            position: absolute;
+            top: -1px; right: -1px; width: 15px; height: 15px;
+            border-top: 1px solid var(--mint);
+            border-right: 1px solid var(--mint);
+        }
+
+        .entity.transformed .ui-view {
+            opacity: 1;
+            transform: translateY(-50%) scale(1);
+            animation: glitch-entry 0.3s step-end;
+        }
+
+        @keyframes glitch-entry {
+            0% { clip-path: inset(0 0 0 0); transform: translateY(-50%) translateX(-10px); }
+            20% { clip-path: inset(10% 0 80% 0); transform: translateY(-50%) translateX(10px); }
+            40% { clip-path: inset(60% 0 10% 0); transform: translateY(-50%) translateX(-5px); }
+            60% { clip-path: inset(30% 0 30% 0); transform: translateY(-50%) translateX(5px); }
+            100% { clip-path: inset(0 0 0 0); transform: translateY(-50%) translateX(0); }
+        }
+
+        .ui-label { font-family: var(--font-code); font-size: 9px; text-transform: uppercase; color: var(--mint); margin-bottom: 10px; letter-spacing: 2px; }
+        .ui-bar { height: 2px; background: rgba(0, 255, 170, 0.1); margin-bottom: 6px; width: 100%; position: relative; }
+        .ui-bar-fill { height: 100%; background: var(--mint); box-shadow: 0 0 10px var(--mint); }
+        .ui-button { border: 1px solid var(--mint); padding: 6px 12px; color: var(--mint); font-family: var(--font-code); font-size: 9px; font-weight: bold; text-transform: uppercase; margin-top: 10px; display: inline-block; }
+
+        #overlay {
+            position: absolute;
+            top: clamp(18px, 8%, 40px);
+            left: clamp(22px, 4%, 60px);
+            z-index: 200;
+            pointer-events: none;
+        }
+
+        #overlay h1 { font-size: 24px; font-weight: 900; letter-spacing: 0; color: white; margin-bottom: 3px; }
+        #overlay h1 span { color: var(--mint); text-shadow: 0 0 15px var(--mint-glow); }
+        #overlay p { font-family: var(--font-code); font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 2px; }
+
+        #brand-logo {
+            position: absolute;
+            bottom: clamp(18px, 8%, 40px);
+            right: clamp(22px, 4%, 60px);
+            text-align: right;
+            z-index: 200;
+        }
+        #brand-logo .ver { font-family: var(--font-code); color: var(--mint); font-size: 9px; letter-spacing: 4px; }
+    </style>
+</head>
+<body>
+
+    <div id="visualizer">
+        <div id="horizon-container"></div>
+        
+        <div id="overlay">
+            <h1>PAGE.<span>UI</span></h1>
+            <p>Direct Intent Extraction // Build v8.4.2</p>
+        </div>
+
+        <div id="brand-logo">
+            <div class="ver">WIDESCREEN_MODULE_ACTIVE</div>
+        </div>
+    </div>
+
+    <script>
+        const container = document.getElementById('visualizer');
+        const stage = {
+            width: 1500,
+            height: 500,
+            mid: 750
+        };
+
+        function measureStage() {
+            const rect = container.getBoundingClientRect();
+            stage.width = rect.width;
+            stage.height = rect.height;
+            stage.mid = rect.width / 2;
+        }
+
+        const snippets = [
+            'Build a cyber dashboard for launch metrics',
+            'Make a clean SaaS admin screen for invoices',
+            'Create a landing page for an AI design tool',
+            'Turn this idea into a polished app interface',
+            'Design a dark analytics page with live cards',
+            'Make a mobile-first onboarding flow',
+            'Create a pricing page that feels premium',
+            'Build a portfolio page for a product designer',
+            'Make a realtime chat UI with file previews',
+            'Design a task board for a startup team',
+            'Create a sleek settings page for teams',
+            'Build a hero section for a developer tool',
+            'Make a customer dashboard with charts',
+            'Create a clean login and signup experience',
+            'Design a compact CRM contact overview'
+        ];
+
+        const uiTemplates = [
+            { html: `<div class="ui-label">Module::Analysis</div><div class="ui-bar"><div class="ui-bar-fill" style="width: 75%"></div></div><div class="ui-bar"><div class="ui-bar-fill" style="width: 40%"></div></div><div class="ui-button">Initialize_Core</div>` },
+            { html: `<div class="ui-label">Data::Stream</div><div style="display:flex; align-items:flex-end; gap:4px; height:50px;"><div style="flex:1; height:30%; background:var(--mint); opacity:0.3;"></div><div style="flex:1; height:90%; background:var(--mint);"></div><div style="flex:1; height:60%; background:var(--mint); opacity:0.6;"></div><div style="flex:1; height:80%; background:var(--mint);"></div></div>` },
+            { html: `<div class="ui-label">Access::Gate</div><div style="display:flex; justify-content:space-between; align-items:center; border: 1px solid var(--border); padding: 8px;"><div style="font-size:10px; font-weight:bold">SECURE_LINK</div><div style="width:8px; height:8px; background:var(--mint); box-shadow: 0 0 10px var(--mint);"></div></div>` }
+        ];
+
+        class Entity {
+            constructor() {
+                this.el = document.createElement('div');
+                this.el.className = 'entity';
+                this.el.innerHTML = `<div class="content-wrapper"><div class="code-view"></div><div class="ui-view"></div></div>`;
+                this.codeView = this.el.querySelector('.code-view');
+                this.uiView = this.el.querySelector('.ui-view');
+                container.appendChild(this.el);
+                this.reset();
+            }
+
+            reset() {
+                measureStage();
+                const spawnOffset = Math.max(220, stage.width * 0.27);
+                const verticalPadding = Math.max(36, stage.height * 0.2);
+                const travelScale = Math.max(0.55, stage.width / 1500);
+
+                this.x = -spawnOffset;
+                this.y = verticalPadding + Math.random() * Math.max(1, stage.height - verticalPadding * 2);
+                this.speed = (1.0 + Math.random() * 1.5) * travelScale; 
+                this.transformed = false;
+                this.el.classList.remove('transformed');
+                
+                this.codeView.innerText = snippets[Math.floor(Math.random() * snippets.length)];
+                this.uiView.innerHTML = uiTemplates[Math.floor(Math.random() * uiTemplates.length)].html;
+                
+                this.updatePosition();
+            }
+
+            update() {
+                measureStage();
+                this.x += this.speed;
+                const fadeInStart = -Math.max(220, stage.width * 0.27);
+                const fadeInDistance = Math.max(180, stage.width * 0.2);
+                const fadeOutStart = stage.width - Math.max(180, stage.width * 0.27);
+                const fadeOutDistance = Math.max(220, stage.width * 0.27);
+                
+                let opacity = 1;
+                if (this.x < fadeInStart + fadeInDistance) {
+                    opacity = (this.x - fadeInStart) / fadeInDistance;
+                } else if (this.x > fadeOutStart) {
+                    opacity = (stage.width - this.x) / fadeOutDistance;
+                }
+                this.el.style.opacity = Math.max(0, Math.min(1, opacity));
+
+                if (!this.transformed && this.x > stage.mid - 10) {
+                    this.transformed = true;
+                    this.el.classList.add('transformed');
+                }
+
+                if (this.x > stage.width + Math.max(160, stage.width * 0.14)) this.reset();
+                this.updatePosition();
+            }
+
+            updatePosition() {
+                this.el.style.transform = `translate3d(${this.x}px, ${this.y}px, 0)`;
+
+                const relativeClipX = stage.mid - this.x;
+                if (relativeClipX <= 0) {
+                    this.codeView.style.clipPath = 'inset(0 100% 0 0)';
+                } else {
+                    const width = this.codeView.offsetWidth;
+                    const clipPercent = Math.max(0, width - relativeClipX);
+                    this.codeView.style.clipPath = `inset(0 ${clipPercent}px 0 0)`;
+                }
+            }
+        }
+
+        const pool = [];
+        const count = 6; 
+
+        function start() {
+            measureStage();
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => pool.push(new Entity()), i * 3000); 
+            }
+            tick();
+        }
+
+        window.addEventListener('resize', () => {
+            measureStage();
+            for (let i = 0; i < pool.length; i++) {
+                pool[i].y = Math.min(pool[i].y, Math.max(0, stage.height - 40));
+                pool[i].updatePosition();
+            }
+        });
+
+        function tick() {
+            for (let i = 0; i < pool.length; i++) {
+                pool[i].update();
+            }
+            requestAnimationFrame(tick);
+        }
+
+        start();
+    </script>
+</body>
+</html>

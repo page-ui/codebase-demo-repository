@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="Page.Ui.Application/Page.Ui.Application.csproj" />
+  <Project Path="Page.Ui.Backend.Tests/Page.Ui.Backend.Tests.csproj" />
+  <Project Path="Page.Ui.Domain/Page.Ui.Domain.csproj" />
+  <Project Path="Page.Ui.Infrastructure/Page.Ui.Infrastructure.csproj" />
+  <Project Path="Page.Ui.Presentation/Page.Ui.Presentation.csproj" />
+  <Project Path="Page.Ui.SvelteRender/Page.Ui.SvelteRender.csproj" />
+  <Project Path="Page.Ui.Worker.Ai/Page.Ui.Worker.Ai.csproj" />
+</Solution>

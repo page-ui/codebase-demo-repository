@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Page UI Preview</title>
+
+<!-- Your app logo in the tab -->
+<link rel="icon" type="image/png" href="/assets/images/UIPreviewLogo.png">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #0A0A0F;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+</style>
+</head>
+<body>
+
+<iframe id="previewFrame"></iframe>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const url = params.get('url');
+
+if (url) {
+  document.getElementById('previewFrame').src = decodeURIComponent(url);
+}
+</script>
+
+</body>
+</html>

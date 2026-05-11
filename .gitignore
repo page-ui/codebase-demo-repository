@@ -1,0 +1,11 @@
+
+.env
+src/ai/ui-ai-service/app/.env
+*.env
+src/ai/ui-ai-service/.env
+
+.env
+*.env
+!*.env.example
+src/ai/ui-ai-service/.env
+src/ai/ui-ai-service/app/.env
