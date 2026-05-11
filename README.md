@@ -380,6 +380,4 @@ curl http://localhost:5000/health
 curl http://localhost:8000/ready
 curl http://localhost/health
 ```
-#   F u l l _ P r o j e c t  
- #   F u l l _ P r o j e c t  
- 
+#
